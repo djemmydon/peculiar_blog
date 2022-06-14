@@ -70,7 +70,7 @@ function Post({ post }: Props) {
         <p>
           blog post by <span className="   p-2  text-base pl-10"></span>-
         </p>
-        Publish post on {new Date(post._createdAt).toLocaleDateString()}
+        Publish post on {new Date(post._createdAt).toLocaleString()}
       </div>
 
       <div>
@@ -146,7 +146,7 @@ function Post({ post }: Props) {
             {errors.comment && <p>Your name is required</p>}
           </label>
 
-          <button type="submit" className=' border-t-orange-400 border-2 bg-orange-400' >Save</button>S
+          <button type="submit" className=' border-t-orange-400 border-2 bg-orange-400' >Save</button>
         </form>
       </div>
     </main>
