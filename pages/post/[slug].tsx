@@ -8,6 +8,7 @@ import PortableText from "react-portable-text";
 import Navbar from "../../components/Navbar";
 import { useForm, SubmitHandler } from "react-hook-form";
 import createComment from "../api/createComment";
+import dynamic from "next/dynamic";
 
 interface Props {
   post: Post;
@@ -28,8 +29,8 @@ function Post({ post }: Props) {
   } = useForm<Iform>();
 
 
-  const onSubmitForm:SubmitHandler<Iform>= (data) =>{
-  sanityClients.fetch("/api/createComment",{
+  const onSubmit:SubmitHandler<Iform>= (data) =>{
+  fetch("/api/commenting",{
         method: 'POST',
         body: JSON.stringify(data)
 
@@ -105,7 +106,7 @@ function Post({ post }: Props) {
       </div>
       <hr className="h-10 my-5" />
       <div>
-        <form action="" className="flex flex-col py-3 px-3 max-w-xl mx-auto" onSubmit={handleSubmit(onSubmitForm)}>
+        <form action="" className="flex flex-col py-3 px-3 max-w-xl mx-auto" onSubmit={handleSubmit(onSubmit)}>
           <input
             {...register("_id")}
             type="hidden"
@@ -153,7 +154,8 @@ function Post({ post }: Props) {
   );
 }
 
-export default Post;
+export default dynamic(() => Promise.resolve(Post), { ssr: false });
+
 
 export const getStaticPaths = async () => {
   const query = `*[_type == "post"] {
@@ -186,13 +188,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 
 
-      'comments': *[_type == "comment" && post._ref == ^._id && approved == true]{
-        _id, 
-        name, 
-        email, 
-        comment, 
-        _createdAt
-    },
+      'comments': *[_type == "comment" && post._ref == ^._id && approved == true],
+     
 
       author -> {
       name,

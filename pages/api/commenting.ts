@@ -12,7 +12,7 @@ const  config = {
 };
 
 const client = sanityClient(config);
-export default  async function  createComment(
+export default  async function  commenting(
     req: NextApiRequest,
     res: NextApiResponse
 ){
