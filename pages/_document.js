@@ -6,7 +6,7 @@ export default function Document() {
       <Head>
       <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"/>
 
-<script src="https://unicons.iconscout.com/release/v4.0.0/script/monochrome/bundle.js"/>
+<script async src="https://unicons.iconscout.com/release/v4.0.0/script/monochrome/bundle.js"/>
 
       </Head>
       <body>
