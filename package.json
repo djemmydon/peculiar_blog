@@ -10,15 +10,21 @@
   },
   "dependencies": {
     "@sanity/block-content-to-html": "^2.0.0",
+    "@sanity/block-content-to-react": "^3.0.0",
     "@sanity/image-url": "^1.0.1",
+    "axios": "^0.27.2",
     "init": "^0.1.2",
+    "moment": "^2.29.4",
     "next": "12.1.4",
+    "next-connect": "^0.13.0",
     "next-sanity": "^0.5.2",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-hook-form": "^7.30.0",
     "react-portable-text": "^0.4.3",
-    "sanity": "^2.29.3"
+    "sanity": "^2.29.3",
+    "styled-component": "^2.8.0",
+    "styled-components": "^5.3.5"
   },
   "devDependencies": {
     "@types/node": "^17.0.30",

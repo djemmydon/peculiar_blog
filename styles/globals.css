@@ -1,3 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --background: #fe4f70;
+  --gradient: linear-gradient(to right, #fe4f70 0%, #ffa387 100%);
+  --font-color: #79889e;
+  --big-color:color: #203656;
+  --bg-color: #fff6f0;
+  --font-small: "Poppins", sans-serif;
+  --font-big: "Poppins", sans-serif;
+  --border-color: solid 1px #EBEBEB;
+  --border:#EBEBEB;
+}

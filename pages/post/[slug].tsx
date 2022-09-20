@@ -1,17 +1,18 @@
 import { GetStaticProps } from "next";
 import React from "react";
 import sanityClients from "../../sanity";
-import { Post } from "../../typings";
+import { Posts } from "../../typings";
 import imageUrlBuilder from "@sanity/image-url";
+const BlockContent = require("@sanity/block-content-to-react");
 
-import PortableText from "react-portable-text";
-import Navbar from "../../components/Navbar";
+// import PortableText from "react-portable-text";
+// import Navbar from "../../components/Navbar";
 import { useForm, SubmitHandler } from "react-hook-form";
-import createComment from "../api/createComment";
 import dynamic from "next/dynamic";
+import axios from "axios";
 
 interface Props {
-  post: Post;
+  post: Posts;
 }
 
 interface Iform {
@@ -28,31 +29,22 @@ function Post({ post }: Props) {
     formState: { errors },
   } = useForm<Iform>();
 
-
-  const onSubmit:SubmitHandler<Iform>= (data) =>{
-  fetch("/api/commenting",{
-        method: 'POST',
-        body: JSON.stringify(data)
-
-    }).then(() => {
-        console.log(data);
-        
-    }).catch((errors) => {
-      console.log(errors);
-    })
-
-    
-  }
+  const onSubmit: SubmitHandler<Iform> = async (data) => {
+    await axios.post("/api/comment", data).then((res) => {
+      if (data) {
+        console.log(res.data, "The data");
+      } else if (!res.data) {
+        console.log("Error is here oooo");
+      }
+    });
+  };
 
   const builder = imageUrlBuilder(sanityClients);
-
   function urlFor(source) {
     return builder.image(source);
   }
   return (
     <main className="container mx-auto">
-      <Navbar />
-
       <div className="container md:md mx-auto">
         <img
           src={urlFor(post.mainImage).width(1000).height(300).url()!}
@@ -79,34 +71,39 @@ function Post({ post }: Props) {
       </div>
 
       <div>
-        <PortableText
+        <BlockContent
           className=""
           projectId={process.env.NEXT_PLUBLIC_SANITY_PROJECT_ID}
           dataset={process.env.NEXT_PLUBLIC_SANITY_DATASET}
-          content={post.body}
-          serializers={{
-            h1: (props: any) => {
-              <h1 className="text-2xl font-bold my-5" {...props} />;
-            },
+          blocks={post.body}
+          imageOptions={{ w: 320, h: 240, fit: "max" }}
+          // serializers={{
+          //   h1: (props: any) => {
+          //     <h1 className="text-2xl font-bold my-5" {...props} />;
+          //   },
 
-            h2: (props: any) => (
-              <h2 className="text-2xl font-extrabold" {...props} />
-            ),
+          //   h2: (props: any) => (
+          //     <h2 className="text-2xl font-extrabold" {...props} />
+          //   ),
 
-            link: ({ href, children }: any) => <a href={href}>{children}</a>,
+          //   link: ({ href, children }: any) => <a href={href}>{children}</a>,
 
-            // image: (props: any) =>{
-            //     <img
-            //     src={urlFor(post.author.image).url()!}
-            //     className=" h-10 rounded-full object-cover"
-            //   />
-            // }
-          }}
+          //   // image: (props: any) =>{
+          //   //     <img
+          //   //     src={urlFor(post.author.image).url()!}
+          //   //     className=" h-10 rounded-full object-cover"
+          //   //   />
+          //   // }
+          // }}
         />
       </div>
       <hr className="h-10 my-5" />
       <div>
-        <form action="" className="flex flex-col py-3 px-3 max-w-xl mx-auto" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          action=""
+          className="flex flex-col py-3 px-3 max-w-xl mx-auto"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <input
             {...register("_id")}
             type="hidden"
@@ -147,7 +144,12 @@ function Post({ post }: Props) {
             {errors.comment && <p>Your name is required</p>}
           </label>
 
-          <button type="submit" className=' border-t-orange-400 border-2 bg-orange-400' >Save</button>
+          <button
+            type="submit"
+            className=" border-t-orange-400 border-2 bg-orange-400"
+          >
+            Save
+          </button>
         </form>
       </div>
     </main>
@@ -155,7 +157,6 @@ function Post({ post }: Props) {
 }
 
 export default dynamic(() => Promise.resolve(Post), { ssr: false });
-
 
 export const getStaticPaths = async () => {
   const query = `*[_type == "post"] {
@@ -168,7 +169,7 @@ export const getStaticPaths = async () => {
 
   const posts = await sanityClients.fetch(query);
 
-  const paths = posts.map((post: Post) => ({
+  const paths = posts.map((post: Posts) => ({
     params: {
       slug: post.slug.current,
     },

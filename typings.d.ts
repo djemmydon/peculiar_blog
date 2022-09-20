@@ -1,4 +1,4 @@
-export interface Post {
+export interface Posts {
     _id: string;
     _createdAt: string;
     title: string;
@@ -19,4 +19,12 @@ export interface Post {
 
     body:[]
 
+}
+
+
+export interface Ifram  {
+    _id: string;
+    name: string;
+    email: string;
+    comment: string;
 }
