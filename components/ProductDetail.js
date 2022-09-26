@@ -60,7 +60,6 @@ const Body = styled.section`
 `;
 const FlexBody = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
 
   @media screen and (max-width: 1000px) {
@@ -75,7 +74,7 @@ const Banner = styled.div`
   position: relative;
   margin: 12px 0;
   overflow: hidden;
-  padding: 0;
+  padding: 0 10px;
 
   @media screen and (max-width: 600px) {
     max-width: 100%;
@@ -91,8 +90,26 @@ const Banner = styled.div`
       height: 500px;
       margin: 0 auto;
       padding: 10px 0;
-      object-fit:cover;
+      object-fit: cover;
       border-radius: 15px;
+    }
+
+    em {
+      font-size: 0.9rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+
+    @media screen and (max-width: 768px) {
+      em {
+        font-size: 0.8rem;
+      }
+
+      p {
+        font-size: 0.8rem;
+      }
     }
 
     @media screen and (max-width: 600px) {
@@ -109,7 +126,7 @@ const Banner = styled.div`
     box-shadow: 4px 0px 20px rgb(32 54 86 / 10%);
 
     @media screen and (max-width: 600px) {
-      border-radius: 0px;
+      /* border-radius: 0px; */
     }
     img {
       width: 100%;
@@ -117,7 +134,7 @@ const Banner = styled.div`
       border-radius: 10px;
       object-fit: cover;
       @media screen and (max-width: 600px) {
-        border-radius: 0px;
+        /* border-radius: 0px; */
       }
     }
   }
@@ -158,6 +175,99 @@ const Banner = styled.div`
   }
 `;
 
+const Comment = styled.div`
+  padding: 10px 2px;
+  border: var(--border-color);
+  border-radius: 10px;
+  @media screen and (max-width: 700px) {
+    width: 100%;
+    border: none;
+  }
+
+  .comment_head {
+    h2 {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: var(--font-big);
+    }
+  }
+  .comment_body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    margin: 5px;
+  }
+
+  .comment_empty{
+    
+  padding: 10px 2px;
+  border: var(--border-color);
+  border-radius: 10px;
+    h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: var(--font-big);
+      text-align: center;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: var(--font-color);
+      font-family: var(--font-small);
+      color: var(--background);
+      text-align: center;
+
+    }
+  }
+  .comment {
+    padding: 10px 5px;
+    margin: 10px 10px;
+    border: var(--border-color);
+    border-radius: 10px;
+
+    h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: var(--font-big);
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: var(--font-color);
+      font-family: var(--font-small);
+      color: var(--background);
+    }
+    span {
+      font-size: 0.7rem;
+      color: var(--font-color);
+      font-family: var(--font-small);
+      padding: 5px 0;
+    }
+
+    @media screen and (max-width: 700px) {
+      h1 {
+        font-size: 1rem;
+        font-weight: 700;
+        font-family: var(--font-big);
+      }
+
+      p {
+        font-size: 0.7rem;
+        color: var(--font-color);
+        font-family: var(--font-small);
+        color: var(--background);
+      }
+      span {
+        font-size: 0.7rem;
+        color: var(--font-color);
+        font-family: var(--font-small);
+        padding: 5px 0;
+      }
+    }
+  }
+`;
+
 const Popular = styled.div`
   width: 380px;
   height: 500px;
@@ -170,6 +280,8 @@ const Popular = styled.div`
     height: 100%;
     border-radius: 0px;
     padding: 0;
+  margin: 12px 0;
+
   }
 
   .header {
@@ -288,7 +400,7 @@ function ProductDetail({ posts }) {
             </div>
           </div>
           <div className="image">
-            <img src={urlFor(posts?.mainImage)} alt="" />
+            <img src={urlFor(posts?.mainImage).height(1000)} alt="" />
           </div>
 
           <div className="text">
@@ -306,10 +418,38 @@ function ProductDetail({ posts }) {
               serializers={serializers}
             />
           </div>
+
+          {/* comments section
+           */}
+
+          <Comment>
+            <div className="comment_head">
+              <h2>Comments ({posts?.comments.length})</h2>
+            </div>
+
+            {posts.comments.length === 0 ? (
+              <div className="comment_empty">
+                <h1>No Comment</h1>
+                <p>You can be the first to comment</p>
+              </div>
+            ) : (
+              <div className="comment_body" >
+                {posts?.comments.map((item) => (
+                  <div className="comment" key={item._id}>
+                    <h1>{item.name}</h1>
+                    <span>
+                      {moment(item._createdAt).format("MMM Do YYYY, h:mm:ss a")}
+                    </span>
+                    <p>{item.comment} </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Comment>
         </Banner>
 
         <Popular>
-          <h1 className="header">Popular Post</h1>
+          {/* <h1 className="header">Popular Post</h1> */}
 
           {/* <div className="products_body">
             {post.map((item) => (

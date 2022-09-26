@@ -262,7 +262,7 @@ function Trending({ post, urlFor }) {
 
           <div className="products_body">
             {post.map((item) => (
-              <Link href={`/.post/${item.slug.current}`} key={item._id}>
+              <Link href={`/post/${item.slug.current}`} key={item._id}>
                 <a className="product">
                   <div className="product_image">
                     <img src={urlFor(item?.mainImage)} alt="" />

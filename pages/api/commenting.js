@@ -6,7 +6,8 @@ const handler = nc();
 handler.post(async (req, res) => {
   const projectId = "l8vbspxo";
   const dataset = "production";
-  const tokenWithAccess = "skLrJXvHmUrXGNrV6AGhVrYI67Y1n673I44AHQS7YQavxj5Qu32jnIWLmyhdoBnIMPHspWIAfXyjNDemq3oZr8rBpmcm2W6e02Z8wrwyIbi9yVJXWgNTY8S25GbK74EGoJIjrtn5mh9uWmEVbeLDbdsHOBDfyP4QyjqNj82tUnpvbkC9EMqG";
+  const tokenWithAccess =
+    "skLrJXvHmUrXGNrV6AGhVrYI67Y1n673I44AHQS7YQavxj5Qu32jnIWLmyhdoBnIMPHspWIAfXyjNDemq3oZr8rBpmcm2W6e02Z8wrwyIbi9yVJXWgNTY8S25GbK74EGoJIjrtn5mh9uWmEVbeLDbdsHOBDfyP4QyjqNj82tUnpvbkC9EMqG";
 
   const createMutation = [
     {
@@ -19,7 +20,6 @@ handler.post(async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         comment: req.body.comment,
-        approved: false,
       },
     },
   ];
@@ -38,7 +38,6 @@ handler.post(async (req, res) => {
   );
   res.status(201).send({ message: "Sent" });
   console.log(res);
-
 });
 
-export default handler;    
+export default handler;

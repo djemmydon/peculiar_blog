@@ -104,6 +104,8 @@ const Banner = styled.div`
       margin: 10px 0;
     }
 
+
+
     .date_author {
       display: flex;
 
@@ -265,7 +267,7 @@ function Hero({ post, urlFor }) {
               <Link href={`/post/${item.slug.current}`} key={item._id}>
                 <a className="product">
                   <div className="product_image">
-                    <img src={urlFor(item?.mainImage)} alt="" />
+                    <img src={urlFor(item?.mainImage).height(1000)} alt="" />
                   </div>
 
                   <div className="product_text">

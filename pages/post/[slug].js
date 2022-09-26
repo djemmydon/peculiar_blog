@@ -73,10 +73,11 @@ function Post({ post }) {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const onSubmit  = async (data) => {
+  const onSubmit = async (data) => {
     await axios.post("/api/comment", data).then((res) => {
       if (data) {
         console.log(res.data, "The data");
@@ -84,6 +85,8 @@ function Post({ post }) {
         console.log("Error is here oooo");
       }
     });
+
+    reset();
   };
 
   const builder = imageUrlBuilder(sanityClients);
@@ -92,10 +95,7 @@ function Post({ post }) {
   }
   return (
     <main className="container mx-auto">
-        <ProductDetail
-        posts = {post}
-
-        />
+      <ProductDetail posts={post} />
       {/* <div className="container md:md mx-auto">
         <img
           src={urlFor(post.mainImage).width(1000).height(300)}
@@ -137,10 +137,16 @@ function Post({ post }) {
         />
       </div>
       <hr className="h-10 my-5" />
+   */}
+
       <div>
+        <div className="  font-bold pl-4">
+          <h2 className=" font-3
+          xl">Leave A comment</h2>
+        </div>
         <form
           action=""
-          className="flex flex-col py-3 px-3 max-w-xl mx-auto"
+          className="flex flex-col py-3 px-3 max-w-xl font-[var(--font-big)]"
           onSubmit={handleSubmit(onSubmit)}
         >
           <input
@@ -190,7 +196,7 @@ function Post({ post }) {
             Save
           </button>
         </form>
-      </div> */}
+      </div>
     </main>
   );
 }
@@ -228,7 +234,7 @@ export const getStaticProps = async ({ params }) => {
 
 
 
-      'comments': *[_type == "comment" && post._ref == ^._id && approved == true],
+      'comments': *[_type == "comments" && post._ref == ^._id && approved == true],
      
 
       author -> {
