@@ -1,9 +1,10 @@
 import { GetStaticProps } from "next";
 import React from "react";
 import sanityClients from "../../sanity";
-import { Posts } from "../../typings";
+// import { Posts } from "../../typings";
 import imageUrlBuilder from "@sanity/image-url";
 const BlockContent = require("@sanity/block-content-to-react");
+import ProductDetail from "../../components/ProductDetail";
 
 // import PortableText from "react-portable-text";
 // import Navbar from "../../components/Navbar";
@@ -11,25 +12,71 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import dynamic from "next/dynamic";
 import axios from "axios";
 
-interface Props {
-  post: Posts;
-}
+// interface Props {
+//   post: Posts;
+// }
 
-interface Iform {
-  _id: string;
-  name: string;
-  email: string;
-  comment: string;
-}
+// interface Iform {
+//   _id: string;
+//   name: string;
+//   email: string;
+//   comment: string;
+// }
 
-function Post({ post }: Props) {
+const serializers = {
+  types: {
+    block: (props) => {
+      const { style = "normal" } = props.node;
+
+      if (/^h\d/.test(style)) {
+        const level = style.replace(/[^\d]/g, "");
+        return React.createElement(
+          style,
+          { className: `heading-${level}` },
+          props.children
+        );
+      }
+
+      if (style === "blockquote") {
+        return <blockquote>- {props.children}</blockquote>;
+      }
+
+      // Fall back to default handling
+      return BlockContent.defaultSerializers.types.block(props);
+    },
+    code: (props) => (
+      <pre data-language={props.node.language}>
+        <code>{props.node.code}</code>
+      </pre>
+    ),
+  },
+  list: (props) =>
+    props.type === "bullet" ? (
+      <ul>{props.children}</ul>
+    ) : (
+      <ol>{props.children}</ol>
+    ),
+  listItem: (props) =>
+    props.type === "bullet" ? (
+      <li>{props.children}</li>
+    ) : (
+      <li>{props.children}</li>
+    ),
+  marks: {
+    strong: (props) => <strong>{props.children}</strong>,
+    em: (props) => <em>{props.children}</em>,
+    code: (props) => <code>{props.children}</code>,
+  },
+};
+
+function Post({ post }) {
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<Iform>();
+  } = useForm();
 
-  const onSubmit: SubmitHandler<Iform> = async (data) => {
+  const onSubmit  = async (data) => {
     await axios.post("/api/comment", data).then((res) => {
       if (data) {
         console.log(res.data, "The data");
@@ -45,16 +92,22 @@ function Post({ post }: Props) {
   }
   return (
     <main className="container mx-auto">
-      <div className="container md:md mx-auto">
+        <ProductDetail
+        posts = {post}
+
+        />
+      {/* <div className="container md:md mx-auto">
         <img
-          src={urlFor(post.mainImage).width(1000).height(300).url()!}
+          src={urlFor(post.mainImage).width(1000).height(300)}
           className=" h-60 md:w-full md:h-96   py-6 md:object-cover "
         />
       </div>
 
+    
+
       <div className="container md:md flex-col md:flex md:flex-row  py-10">
         <img
-          src={urlFor(post.author.image).url()!}
+          src={urlFor(post.author.image)}
           className=" h-10 rounded-full object-cover"
         />
         <span className="text-center  p-2 text-black text-base">
@@ -76,25 +129,11 @@ function Post({ post }: Props) {
           projectId={process.env.NEXT_PLUBLIC_SANITY_PROJECT_ID}
           dataset={process.env.NEXT_PLUBLIC_SANITY_DATASET}
           blocks={post.body}
-          imageOptions={{ w: 320, h: 240, fit: "max" }}
-          // serializers={{
-          //   h1: (props: any) => {
-          //     <h1 className="text-2xl font-bold my-5" {...props} />;
-          //   },
-
-          //   h2: (props: any) => (
-          //     <h2 className="text-2xl font-extrabold" {...props} />
-          //   ),
-
-          //   link: ({ href, children }: any) => <a href={href}>{children}</a>,
-
-          //   // image: (props: any) =>{
-          //   //     <img
-          //   //     src={urlFor(post.author.image).url()!}
-          //   //     className=" h-10 rounded-full object-cover"
-          //   //   />
-          //   // }
-          // }}
+          imageOptions={{
+            width: 500,
+            height: 500,
+          }}
+          serializers={serializers}
         />
       </div>
       <hr className="h-10 my-5" />
@@ -151,7 +190,7 @@ function Post({ post }: Props) {
             Save
           </button>
         </form>
-      </div>
+      </div> */}
     </main>
   );
 }
@@ -169,7 +208,7 @@ export const getStaticPaths = async () => {
 
   const posts = await sanityClients.fetch(query);
 
-  const paths = posts.map((post: Posts) => ({
+  const paths = posts.map((post) => ({
     params: {
       slug: post.slug.current,
     },
@@ -181,7 +220,7 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps = async ({ params }) => {
   const query = `*[_type == "post" && slug.current == $slug][0] {
       _id,
       _createdAt,

@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/api/commenting.js", "pages/post/[slug].tsx", "components/Hero.jsx", "components/Navbar.tsx", "pages/index.js"  ],
+, "pages/api/commenting.js", "pages/post/[slug].js", "components/Hero.jsx", "components/Navbar.tsx", "pages/index.js"  ],
   "exclude": [
     "node_modules"
   ]

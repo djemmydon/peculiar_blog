@@ -1,17 +1,16 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-const Body = styled.nav`
-  width: 100%;
-  height: 100px;
-  max-width: 1140px;
-  margin: 0 auto;
-  overflow: hidden;
-  z-index: 100;
-  background-color:white;
-border-bottom: var(--border-color);
-
-`;
+// const Body = styled.nav`
+//   width: 100%;
+//   height: 100px;
+//   max-width: 1140px;
+//   margin: 0 auto;
+//   overflow: hidden;
+//   z-index: 100;
+//   background-color: white;
+//   /* border-bottom: var(--border-color); */
+// `;
 
 const NavFlex = styled.div`
   height: 100%;
@@ -100,24 +99,22 @@ const NavFlex = styled.div`
     }
   }
 
-  .navItem_slideOpen.active{
+  .navItem_slideOpen.active {
     transform: scale(1);
     border-radius: 0px;
-    right:0;
-
+    right: 0;
+    position: fixed;
   }
   .navItem_slideOpen {
     position: absolute;
     top: 0;
-    right:-100%;
+    right: -100%;
     background-color: white;
     box-shadow: 4px 0px 20px rgb(32 54 86 / 10%);
     width: 300px;
-  height: 100vh;
-    border-radius: 1000px;
-    transition: 0.5s ease-in-out;
+    height: 100vh;
+    transition: 0.2s ease-in-out;
     z-index: 100;
-
 
     ul {
       display: flex;
@@ -152,7 +149,7 @@ const NavFlex = styled.div`
     .logo_cancel {
       display: flex;
       justify-content: space-between;
-      align-items:center;
+      align-items: center;
       margin: 10px 15px;
 
       .icon {
@@ -185,116 +182,56 @@ const NavFlex = styled.div`
 `;
 
 function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [show, handleShow] = useState(false);
 
-  const [open, setOpen] = useState(false)
+  const handleScroll = () => {
+    if (window.scrollY > 100) {
+      handleShow(true);
+    } else if (window.scrollY < 90)  {
+      handleShow(false);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
 
   const handleClick = () => {
-    setOpen(!open)
-  }
+    setOpen(!open);
+  };
   return (
-    <Body>
-      <NavFlex>
-        <div className="logo">
-          <img src="/images/icc.png" alt="" />
-        </div>
-
-        <div className="navItem">
-          <ul>
-            <li>
-              <Link href="/">
-                <a>Home</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/">
-                <a>Sport</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/">
-                <a>Entertainment</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/">
-                <a>Politics</a>
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div className="social_icon">
-          <div className="social_item">
-            <a href="#">
-              <i className="uil uil-facebook icon"></i>
-            </a>
-          </div>
-          <div className="social_item">
-            <a href="#">
-              <i className="uil uil-instagram icon"></i>
-            </a>
-          </div>
-          <div className="social_item">
-            <a href="#">
-              <i className="uil uil-whatsapp icon"></i>
-            </a>
-          </div>
-          <div className="social_item">
-            <a href="#">
-              <i className="uil uil-twitter icon"></i>
-            </a>
-          </div>
-          <div className="social_item">
-            <a href="#">
-              <i className="uil uil-youtube icon"></i>
-            </a>
-          </div>
-        </div>
-
-        <div className="side_icon">
-          <div className="serch_bar">
-            <i className="uil uil-search icon"></i>
-          </div>
-          <div className="serch_bar" onClick={handleClick}>
-            <i className="uil uil-bars icon"></i>
-          </div>
-        </div>
-
-        <div className={open ? "navItem_slideOpen active" : "navItem_slideOpen "}>
-          <div className="logo_cancel">
-            <div className="logo">
-              <img src="/images/icc.png" alt="" />
-            </div>
-
-            <div onClick={handleClick}>
-              <i className="uil uil-times icon"></i>
-            </div>
+    <div >
+      <div className={show ? "nav_top nav_scroll" : "nav_scroll"}>
+        <NavFlex>
+          <div className="logo">
+            <img src="/images/icc.png" alt="" />
           </div>
 
-          <ul>
-            <li>
-              <Link href="/">
-                <a>Home</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/">
-                <a>Sport</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/">
-                <a>Entertainment</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/">
-                <a>Politics</a>
-              </Link>
-            </li>
-          </ul>
+          <div className="navItem">
+            <ul>
+              <li>
+                <Link href="/">
+                  <a>Home</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/">
+                  <a>Sport</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/">
+                  <a>Entertainment</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/">
+                  <a>Politics</a>
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-          <div className="social_icon_mobile">
+          <div className="social_icon">
             <div className="social_item">
               <a href="#">
                 <i className="uil uil-facebook icon"></i>
@@ -321,9 +258,83 @@ function Navbar() {
               </a>
             </div>
           </div>
-        </div>
-      </NavFlex>
-    </Body>
+
+          <div className="side_icon">
+            <div className="serch_bar">
+              <i className="uil uil-search icon"></i>
+            </div>
+            <div className="serch_bar" onClick={handleClick}>
+              <i className="uil uil-bars icon"></i>
+            </div>
+          </div>
+
+          <div
+            className={open ? "navItem_slideOpen active" : "navItem_slideOpen "}
+          >
+            <div className="logo_cancel">
+              <div className="logo">
+                <img src="/images/icc.png" alt="" />
+              </div>
+
+              <div onClick={handleClick}>
+                <i className="uil uil-times icon"></i>
+              </div>
+            </div>
+
+            <ul>
+              <li>
+                <Link href="/">
+                  <a>Home</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/">
+                  <a>Sport</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/">
+                  <a>Entertainment</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/">
+                  <a>Politics</a>
+                </Link>
+              </li>
+            </ul>
+
+            <div className="social_icon_mobile">
+              <div className="social_item">
+                <a href="#">
+                  <i className="uil uil-facebook icon"></i>
+                </a>
+              </div>
+              <div className="social_item">
+                <a href="#">
+                  <i className="uil uil-instagram icon"></i>
+                </a>
+              </div>
+              <div className="social_item">
+                <a href="#">
+                  <i className="uil uil-whatsapp icon"></i>
+                </a>
+              </div>
+              <div className="social_item">
+                <a href="#">
+                  <i className="uil uil-twitter icon"></i>
+                </a>
+              </div>
+              <div className="social_item">
+                <a href="#">
+                  <i className="uil uil-youtube icon"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </NavFlex>
+      </div>
+    </div>
   );
 }
 

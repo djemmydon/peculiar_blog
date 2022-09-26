@@ -101,13 +101,13 @@ const Banner = styled.div`
           color: var(--big-color);
           font-family: var(--font-small);
           font-size: 1.4rem;
-          font-weight: 600;
+          font-weight: 900;
         }
 
         span {
           font-family: var(--font-small);
           font-size: 13px;
-          color: var(--font-color);
+          color: var(--background) var(--gradient);
         }
       }
 

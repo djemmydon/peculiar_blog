@@ -2,7 +2,54 @@ import moment from "moment";
 import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
-// import { urlFor } from "../utils/client";
+import { urlFor } from "../utils/client";
+const BlockContent = require("@sanity/block-content-to-react");
+
+const serializers = {
+  types: {
+    block: (props) => {
+      const { style = "normal" } = props.node;
+
+      if (/^h\d/.test(style)) {
+        const level = style.replace(/[^\d]/g, "");
+        return React.createElement(
+          style,
+          { className: `heading-${level}` },
+          props.children
+        );
+      }
+
+      if (style === "blockquote") {
+        return <blockquote>- {props.children}</blockquote>;
+      }
+
+      // Fall back to default handling
+      return BlockContent.defaultSerializers.types.block(props);
+    },
+    code: (props) => (
+      <pre data-language={props.node.language}>
+        <code>{props.node.code}</code>
+      </pre>
+    ),
+  },
+  list: (props) =>
+    props.type === "bullet" ? (
+      <ul>{props.children}</ul>
+    ) : (
+      <ol>{props.children}</ol>
+    ),
+  listItem: (props) =>
+    props.type === "bullet" ? (
+      <li>{props.children}</li>
+    ) : (
+      <li>{props.children}</li>
+    ),
+  marks: {
+    strong: (props) => <strong>{props.children}</strong>,
+    em: (props) => <em>{props.children}</em>,
+    code: (props) => <code>{props.children}</code>,
+  },
+};
 const Body = styled.section`
   max-width: 1140px;
   margin: 2rem auto;
@@ -23,27 +70,44 @@ const FlexBody = styled.div`
 
 const Banner = styled.div`
   width: 700px;
-  height: 500px;
+
   border-radius: 10px;
   position: relative;
   margin: 12px 0;
-  box-shadow: 4px 0px 20px rgb(32 54 86 / 10%);
   overflow: hidden;
   padding: 0;
 
   @media screen and (max-width: 600px) {
     max-width: 100%;
-    height: 400px;
     border-radius: 0 0 5rem 0;
   }
 
+  .content {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-small);
+    img {
+      width: 500px;
+      height: 500px;
+      margin: 0 auto;
+      padding: 10px 0;
+      object-fit:cover;
+      border-radius: 15px;
+    }
+
+    @media screen and (max-width: 600px) {
+      padding: 10px;
+    }
+  }
   .image {
     width: 100%;
-    height: 100%;
+    height: 500px;
     border-radius: 10px;
     position: relative;
     border-radius: 10px;
     transition: 0.3s ease-in-out;
+    box-shadow: 4px 0px 20px rgb(32 54 86 / 10%);
+
     @media screen and (max-width: 600px) {
       border-radius: 0px;
     }
@@ -56,35 +120,13 @@ const Banner = styled.div`
         border-radius: 0px;
       }
     }
-
-    &::before {
-      content: " ";
-      top: 0;
-      left: 0;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-color: #302d2d;
-      border-radius: 10px;
-      opacity: 0.4;
-
-      @media screen and (max-width: 600px) {
-        border-radius: 0px;
-      }
-    }
-
-    &:hover {
-      transform: scale(1.05);
-    }
   }
 
   .text {
-    position: absolute;
     bottom: 0;
     left: 0;
-    color: white;
     margin-bottom: 3rem;
-    margin-left: 2rem;
+    margin-left: 0rem;
 
     .category_text {
       padding: 10px 0;
@@ -147,7 +189,7 @@ const Popular = styled.div`
     .product {
       display: flex;
       justify-content: space-between;
-      align-items:center;
+      align-items: center;
 
       width: 100%;
       height: 90px;
@@ -222,10 +264,8 @@ const Popular = styled.div`
   }
 `;
 
-function Hero({ post, urlFor }) {
+function ProductDetail({ posts }) {
   // const [product, setProduct] = useState([]);
-
-  const product = post[Math.floor(Math.random())];
 
   // useEffect(() => {
   //   const fetchProduct = () => {
@@ -239,28 +279,39 @@ function Hero({ post, urlFor }) {
     <Body>
       <FlexBody>
         <Banner>
+          <div className="text">
+            <h1>{posts?.title}</h1>
+            <div className="date_author">
+              <span>Author: {posts.author.name} </span>
+              <span>-</span>
+              <span>{moment(posts._createdAt).format("MMM YYYY ddd")}</span>
+            </div>
+          </div>
           <div className="image">
-            <img src={urlFor(product?.mainImage)} alt={product?.title} />
+            <img src={urlFor(posts?.mainImage)} alt="" />
           </div>
 
           <div className="text">
             <div className="category_text">
               <span>Category</span>
             </div>
-            <h1>{product?.title}</h1>
+          </div>
 
-            <div className="date_author">
-              <span>Author: {product.author.name} </span>
-              <span>-</span>
-              <span>{moment(product._createdAt).format("MMM YYYY ddd")}</span>
-            </div>
+          <div>
+            <BlockContent
+              className="content"
+              projectId={process.env.NEXT_PLUBLIC_SANITY_PROJECT_ID}
+              dataset={process.env.NEXT_PLUBLIC_SANITY_DATASET}
+              blocks={posts.body}
+              serializers={serializers}
+            />
           </div>
         </Banner>
 
         <Popular>
           <h1 className="header">Popular Post</h1>
 
-          <div className="products_body">
+          {/* <div className="products_body">
             {post.map((item) => (
               <Link href={`/post/${item.slug.current}`} key={item._id}>
                 <a className="product">
@@ -277,11 +328,11 @@ function Hero({ post, urlFor }) {
                 </a>
               </Link>
             ))}
-          </div>
+          </div> */}
         </Popular>
       </FlexBody>
     </Body>
   );
 }
 
-export default Hero;
+export default ProductDetail;

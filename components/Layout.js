@@ -9,6 +9,7 @@ const Body = styled.div`
 position:relative;
 background-color:#fff;
 overflow: hidden;
+ max-width: 1140px;
 
 margin: 0 auto;
 position: relative;
