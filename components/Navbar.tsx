@@ -297,14 +297,14 @@ function Navbar() {
 
             <ul>
               <li onClick={handleClick}>
-                <Link href="/">
+                <Link href="/" >
                   <a>Home</a>
                 </Link>
               </li>
 
               {navData.map((item) => (
-                <li key={item._id}>
-                  <Link href={item.slug.current}>
+                <li key={item._id} onClick={handleClick}>
+                  <Link href={`/${item.slug.current}`}>
                     <a>{item.title}</a>
                   </Link>
                 </li>
