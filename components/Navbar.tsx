@@ -234,8 +234,8 @@ function Navbar() {
                   <a>Home</a>
                 </Link>
               </li>
-           
-              {navData.slice(0,5).map((item) => (
+
+              {navData.slice(0, 5).map((item) => (
                 <li key={item._id}>
                   <Link href={`/${item.slug.current}`}>
                     <a>{item.title}</a>
@@ -296,7 +296,7 @@ function Navbar() {
             </div>
 
             <ul>
-              <li>
+              <li onClick={handleClick}>
                 <Link href="/">
                   <a>Home</a>
                 </Link>
