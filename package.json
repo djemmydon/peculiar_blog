@@ -22,9 +22,11 @@
     "react-dom": "18.0.0",
     "react-hook-form": "^7.30.0",
     "react-portable-text": "^0.4.3",
+    "react-spinners": "^0.13.4",
     "sanity": "^2.29.3",
     "styled-component": "^2.8.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "tailwind-scrollbar-hide": "^1.1.7"
   },
   "devDependencies": {
     "@types/node": "^17.0.30",

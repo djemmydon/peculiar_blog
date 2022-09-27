@@ -69,7 +69,7 @@ const serializers = {
   },
 };
 
-function Post({ post }) {
+function Post({ post, posts }) {
   const {
     handleSubmit,
     register,
@@ -95,7 +95,7 @@ function Post({ post }) {
   }
   return (
     <main className="container mx-auto">
-      <ProductDetail posts={post} />
+      <ProductDetail posts={post} post={posts} />
       {/* <div className="container md:md mx-auto">
         <img
           src={urlFor(post.mainImage).width(1000).height(300)}
@@ -141,8 +141,12 @@ function Post({ post }) {
 
       <div>
         <div className="  font-bold pl-4">
-          <h2 className=" font-3
-          xl">Leave A comment</h2>
+          <h2
+            className=" font-3
+          xl"
+          >
+            Leave A comment
+          </h2>
         </div>
         <form
           action=""
@@ -255,9 +259,13 @@ export const getStaticProps = async ({ params }) => {
 
 }`;
 
+  const query2 = `*[_type == "post"]`;
+
   const post = await sanityClients.fetch(query, {
     slug: params?.slug,
   });
+
+  const posts = await sanityClients.fetch(query2);
 
   if (!post) {
     return {
@@ -268,6 +276,7 @@ export const getStaticProps = async ({ params }) => {
   return {
     props: {
       post,
+      posts,
     },
   };
 };

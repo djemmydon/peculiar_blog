@@ -1,9 +1,11 @@
+import React from "react";
+import { client } from "../utils/client";
 import moment from "moment";
 import Link from "next/link";
-import React from "react";
 import styled from "styled-components";
-// import { urlFor } from "../utils/client";
-import AboutCard from "./ReUse/AboutCard";
+import { urlFor } from "../utils/client";
+import AboutCard from "../components/ReUse/AboutCard";
+
 const Body = styled.section`
   max-width: 1140px;
   margin: 2rem auto;
@@ -140,14 +142,13 @@ const Banner = styled.div`
   }
 `;
 
-function Trending({ post, urlFor }) {
-  const product = post[Math.floor(Math.random())];
+function Category({ posts }) {
   return (
     <Body>
       <FlexBody>
         <Banner>
           <div className="products_body">
-            {post.map((item) => (
+            {posts.map((item) => (
               <Link href={`/post/${item.slug.current}`} key={item._id}>
                 <a className="product">
                   <div className="product_image">
@@ -156,10 +157,10 @@ function Trending({ post, urlFor }) {
 
                   <div className="product_text">
                     <div className="date_author">
-                      <span>Author: {product.author.name} </span>
+                      <span>Author: {item.author.name} </span>
                       <span>-</span>
                       <span>
-                        {moment(product._createdAt).format("MMM Do YYYY")}
+                        {moment(item._createdAt).format("MMM Do YYYY")}
                       </span>
                     </div>
                     <h4>{item.title} </h4>
@@ -178,4 +179,61 @@ function Trending({ post, urlFor }) {
   );
 }
 
-export default Trending;
+export default Category;
+
+export const getStaticPaths = async () => {
+  const query = `*[_type == 'category']{
+     slug {
+      current
+     }
+       }`;
+
+  const cate = await client.fetch(query);
+
+  const paths = cate.map((post) => ({
+    params: { slug: post?.slug.current },
+  }));
+
+  return {
+    paths,
+    fallback: "blocking",
+  };
+};
+
+export const getStaticProps = async ({ params: { slug } }) => {
+  const query = `*[_type == 'post' && references(*[_type=="category" && slug.current == "${slug}" ]._id)]{
+  
+   
+        author -> {
+            name,
+            image,
+          },
+
+          _id,
+          _createdAt,
+          title,
+    
+         
+          mainImage,
+          slug,
+          body[]{
+              ..., 
+              asset->{
+                ...,
+                "_key": _id
+              }
+            }
+  
+    }`;
+
+  const trending = `*[_type == 'category']`;
+  // const trending = `*[_type == 'post']`;
+  const posts = await client.fetch(query);
+  // const trendingPosts = await client.fetch(trending);
+  return {
+    props: {
+      posts,
+      // trendingPosts: trendingPosts,
+    },
+  };
+};

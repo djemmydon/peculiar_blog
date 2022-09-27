@@ -1,6 +1,8 @@
-import React, {  useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
+import axios, { AxiosResponse } from "axios";
+import { client } from "../utils/client";
 // const Body = styled.nav`
 //   width: 100%;
 //   height: 100px;
@@ -21,11 +23,15 @@ const NavFlex = styled.div`
   margin: 0 10px;
 
   .logo {
-    width: 30px;
-    height: 30px;
+    width: 150px;
+
+    @media screen and (max-width: 500px) {
+      width: 130px;
+    }
 
     img {
       width: 100%;
+      height: 100%;
     }
   }
 
@@ -103,6 +109,8 @@ const NavFlex = styled.div`
     transform: scale(1);
     border-radius: 0px;
     right: 0;
+    z-index: 100;
+
     position: fixed;
   }
   .navItem_slideOpen {
@@ -181,14 +189,16 @@ const NavFlex = styled.div`
   }
 `;
 
+const query = `*[_type=="category"]`;
 function Navbar() {
   const [open, setOpen] = useState(false);
   const [show, handleShow] = useState(false);
+  const [navData, setNavData] = useState([]);
 
   const handleScroll = () => {
     if (window.scrollY > 100) {
       handleShow(true);
-    } else if (window.scrollY < 90)  {
+    } else if (window.scrollY < 90) {
       handleShow(false);
     }
   };
@@ -198,36 +208,40 @@ function Navbar() {
   const handleClick = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await client.fetch(query);
+      setNavData(res);
+      console.log(res);
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <div >
+    <div>
       <div className={show ? "nav_top nav_scroll" : "nav_scroll"}>
         <NavFlex>
           <div className="logo">
             <img src="/images/icc.png" alt="" />
           </div>
 
-          <div className="navItem">
+          <div className="navItem overflow-x-scroll scrollbar-hide whitespace-nowrap">
             <ul>
               <li>
                 <Link href="/">
                   <a>Home</a>
                 </Link>
               </li>
-              <li>
-                <Link href="/">
-                  <a>Sport</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/">
-                  <a>Entertainment</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/">
-                  <a>Politics</a>
-                </Link>
-              </li>
+           
+              {navData.slice(0,5).map((item) => (
+                <li key={item._id}>
+                  <Link href={`/${item.slug.current}`}>
+                    <a>{item.title}</a>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -287,21 +301,14 @@ function Navbar() {
                   <a>Home</a>
                 </Link>
               </li>
-              <li>
-                <Link href="/">
-                  <a>Sport</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/">
-                  <a>Entertainment</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/">
-                  <a>Politics</a>
-                </Link>
-              </li>
+
+              {navData.map((item) => (
+                <li key={item._id}>
+                  <Link href="/">
+                    <a>{item.title}</a>
+                  </Link>
+                </li>
+              ))}
             </ul>
 
             <div className="social_icon_mobile">
