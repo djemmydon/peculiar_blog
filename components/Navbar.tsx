@@ -304,7 +304,7 @@ function Navbar() {
 
               {navData.map((item) => (
                 <li key={item._id}>
-                  <Link href="/">
+                  <Link href={item.slug.current}>
                     <a>{item.title}</a>
                   </Link>
                 </li>
